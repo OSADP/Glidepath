@@ -1,0 +1,145 @@
+/*
+ * Web interface for Leidos @ TFHRC Task 4
+ * 
+ * Retrieves and displays data from the vehicle's internal computer.
+ * Designed to be accessed from a mobile device inside the vehicle connected
+ * to the vehicle's system WiFi network. Served over Apache 2 webserver.
+ *
+ * Kyle Rush <kyle.rush@leidos.com>
+ */
+
+body {
+    background-color: #000000;
+    font-family: sans-serif;
+}
+
+/* Stylesheet elements used for speedharm_acc.html */
+
+#contentDisplay {
+    display: table;
+    width: 100%;
+    height: 100%;
+}
+
+.row {
+    display: table-row;
+}
+
+.data {
+	border: 5px solid;
+	border-color: #FFFFFF;
+	color: #FF0000;
+	text-align: center;
+	width: 33%;
+	background-color: #000000;
+	display: table-cell;
+	vertical-align: middle
+}
+
+#menu {
+	margin-left: 0;
+	border: 2px solid;
+	border-radius: 10px;
+	border-color: #FFFFFF;
+	color: #FFFFFF;
+	text-align: left;
+}
+
+#contentHeader {
+	border: 2px solid;
+	border-radius: 10px;
+	width: 100%;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	background-color: #eebb3a;
+	font-weight: bold;
+	font-size: x-large;
+	text-align: center;
+}
+
+#contentHeader a {
+	text-decoration: none;
+}
+
+.error {
+	border: 2px solid;
+	border-radius: 10px;
+	text-align: center;
+	width: 90%;
+	max-width: 500px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	background-color: #FF0000;
+	font-weight: bold;
+}
+
+.tileHeader {
+	text-decoration: underline;
+	font-weight: bold;
+	margin-top: 0%;
+	margin-bottom: 20%;
+	display: block;
+	font-size: x-large;
+}
+
+.tileValue {
+	margin-right: 5px;
+	font-size: large;
+}
+
+/* Stylesheet elements used for index.html */
+
+div #navPane {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+div .navLink {
+	border: 2px solid;
+	border-radius: 10px;
+	border-color: #FFFFFF;
+    background-color: #C0C0C0;
+
+	text-align: center;
+	padding: 20px;
+	font-size: xx-large;
+	font-weight: bold;
+	color: #FF0000;
+}
+
+div .navLink:active {
+	background-color: yellow;
+}
+
+#navPane a {
+	text-decoration: none;
+}
+
+div #textDisplay {
+	color: #FFFFFF;
+}
+
+.padTop20 {
+    padding-top:20px;
+}
+
+.whiteText {
+    color: white;
+}
+
+.greenText {
+    color: green;
+}
+
+.redText {
+    color: red;
+}
+
+.centeredText
+{
+    text-align: center;
+}

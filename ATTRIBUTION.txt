@@ -1,0 +1,11 @@
+Key contributors to the development of the P-ODE software
+development include:
+Kyle Rush, Robert Roth and Fang Zhou of Leidos;
+Jim Cassady, formerly of Leidos.
+
+The developers also wish to acknowledge several contributors to this study:
+
+Leidos task leads:  John Stark, Frank Perry
+
+FHWA task managers:  Dale Thompson, Gene McHale
+

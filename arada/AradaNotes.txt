@@ -1,0 +1,62 @@
+Arada
+
+DEV Box
+Verify using ifconfig that DEV box has IP6 eth0 address 2001:470:1234:1111::2/64
+If not, use the following command to setup
+	ip addr add  2001:470:1234:1111::2/64 dev eth0
+
+Arada Box (*.40)  root/password
+ssh root@192.168.0.40 (password)
+Verify using ifconfig the *.40 address has IP6 address of 2001:470:1234:1111::1/64
+Currently, this was the brtrunk device
+[root@Arada01FAB0 /tmp]# wsmpforward -i 2001:470:1234:1111::2 -p 7789 -y 49136 -u 2 -x 1 -s 172
+Driver invoked
+Registering User
+Register User Failed
+Removing user if already present  1
+USER Registered 0 with PSID =49136
+
+In another terminal on DEV box, go to ~/john or ~/dave/map where utils are 
+This is just to see the traffic…the AsdHandler performs this action and the utility is not needed.
+
+stol@GlidePath-DEV:~/dave/map$ ./WsmpDump 7789
+
+WSMPForward-Server Waiting for client on port 7789
+
+Waiting for next message...
+
+Raw packet content:
+0000: 00 ac 00 03 0e 00 00 00   00 00 00 00 00 00 00 00
+0010: 00 00 00 00 00 00 00 00   00 00 00 00 00 00 00 00
+0020: 00 00 00 00 00 00 f0 bf   00 00 02 00 ff 00 ec 01
+0030: 02 01 03 03 02 01 33 f5   22 fa 83 17 3d 89 01 00
+0040: 01 03 bf f0 00 04 1c 35   f8 de 13 d7 a3 5e 00 00
+0050: 00 01 02 c8 77 45 55 11   65 de 47 cd ae b8 96 9a
+0060: 19 54 98 e0 69 e2 0e 7d   ed 4b d3 1c 93 06 6b 47
+0070: 0d c3 6e 06 bf f0 81 52   87*01 01 4c 01 01 0c 02
+0080: 04 00 00 07 6d 03 08 17   38 0e 98 d2 03 f1 a2 04
+0090: 01 01 05 02 0c 01 06 02   00 2e 08 02 01 90 09 58
+00a0: 02 75 dd fa 21 cf ac 2f   7f db 34 00 16 70 f0 52
+
+
+NOTES FROM EMAIL
+From DEV box, ssh to arada
+Ssh root@192.168.0.40 (password)
+On ASD:
+1. Configure ipv6 address in ASD
+          a.  go to cli mode [execute cli command in terminal]
+          b.  config ip ipv6-address 2001:470:1234:1111::1 64  
+          c. exit from cli mode [execute exit command]
+2. Make sure you able to receive the SPAT and MAP messages on board.
+3. execute command  "wsmpforward -i 2001:470:1234:1111::2 -p 7788 -y 49120 -u 2 -x 1 -s 172"
+      -i --> host machine's  ipv6 address,  -p --> port number need to use same with wsmpforwardserver
+       -y --> 49120, applicaiton psid, this application forwards to host machine. 
+
+Note: use 7789 and 49136 for MAP messages
+wsmpforward -i 2001:470:1234:1111::2 -p 7789 -y 49136 -u 2 -x 1 -s 172
+
+On Host Machine:
+1. Execute command  "ip addr add  2001:470:1234:1111::2/64 dev eth0"
+        above command configures eth0 with ipv6 address 2001:470:1234:1111:2 
+2. Execute command   "./WsmpDump 7788"
+

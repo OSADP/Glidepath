@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Glidepath Observer Page</title>
+
+    <link href="opensource/jquery/css/ui-lightness/jquery-ui-1.10.4.custom.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" media="all" type="text/css" href="css/dvi.css" />
+    <script src="opensource/sockjs-0.3.4.js"></script>
+    <script src="opensource/stomp.js"></script>
+    <script src="opensource/jquery/js/jquery-1.10.2.js"></script>
+    <script src="opensource/jquery/js/jquery-ui-1.10.4.custom.min.js"></script>
+    <script src="js/dviConstants.js"></script>
+    <script src="js/dviAjax.js"></script>
+    <script src="js/connect.js"></script>
+    <script src="js/driver.js"></script>
+
+    <script type="text/javascript">
+
+        function displayUiMessage(uiMessage) {
+
+            setEcoDriveState(uiMessage);
+
+            var speedElement = document.getElementById("speedId");
+
+            if (uiMessage.speed)   {
+                speedElement.value = Math.round(uiMessage.speed);
+            }
+
+            var opSpeedElement = document.getElementById("operatingSpeedId");
+            opSpeedElement.value = Math.round(uiMessage.operatingSpeed);
+
+            // replace underscore in enum value with space
+            if (uiMessage.motionStatus)   {
+                var motionStatus = uiMessage.motionStatus;
+                setDviData("motionStatusId", motionStatus.replace('_', ' '));
+                setMotionStatusImage(uiMessage);
+            }
+
+            if (uiMessage.signalPhase)   {
+                setTrafficSignal(uiMessage);
+                setDviData("timeNextPhaseId", Math.round(uiMessage.timeNextPhase));
+            }
+
+            setDviData("statusMessageId", uiMessage.statusMessage);
+
+            setDistanceToStopBar(uiMessage);
+        }
+    </script>
+
+    <script src="js/dvi.js"></script>
+</head>
+<body>
+<noscript><h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Websocket relies on Javascript being enabled. Please enable
+    Javascript and reload this page!</h2></noscript>
+
+<audio id="audioId" src="sounds/ding.wav" preload="auto"></audio>
+
+<div id="greyContainer">
+
+    <div class="leftColumn padTop10">
+        <img class="padBottom50 centeredImage" id="ecoDriveOffId" src="images/ecoDriveOff.png"/>
+        <img class="centeredImage" id="ecoDriveOnId" src="" />
+    </div>
+
+    <div class="centerColumn" style="border-left:medium #FFFFFF solid; height:400px;">
+        <div class="padTop20 signal">
+            <table class="" id="trafficSignalId" height="350px" width="166px" background="images/TrafficSignal.png" cellpadding="" cellspacing="0">
+                <tr>
+                    <td>
+                        <h1 class="timeNextPhaseRed" id="timeNextPhaseId">
+
+                        </h1>
+                    </td>
+                </tr>
+            </table>
+
+            <label class="hidden" id="logFilePrefixId" />
+
+            <!--show text of uiMessage-->
+            <label id="uiMessage" class="dviValue"></label>
+        </div>
+    </div>
+
+
+    <div class="rightColumn padTop10" style="border-left:medium #FFFFFF solid; height:400px;">
+
+        <label class="padLeft80 whiteText font150">Selected Speed</label>
+        <div class="padBottom20 centered">
+            <input class="operatingspeed centeredText" type="text" id="operatingSpeedId" value="25" />
+        </div>
+
+        <label class="padLeft80 padTop10 padBottom10 whiteText font150">Current Speed</label>
+        <!--<h1 class="whiteText centeredText">Current Speed</h1>-->
+        <div class="padTop10 padBottom20 centered">
+            <input class="speed centeredText" type="text" id="speedId" value="25" />
+        </div>
+
+        <label class="padLeft100 padTop20 whiteText font150" id="motionStatusId"><b>Stopped</b></label>
+        <!--<h1 class="whiteText centeredText" id="motionStatusId"><b>Stopped</b></h1>-->
+        <img class="padTop10 centeredImage" id="motionStatusImageId" src="images/redStopped.jpg" />
+    </div>
+
+    <!--STOP BAR SLIDER-->
+    <h1 class="centeredText whiteText"><b>Distance to Stop Bar</b></h1>
+    <div class="centeredImage width700" id="distanceToStopBarSlider"></div>
+
+    <label class="padLeft200 padRight150 whiteText font150">Start</label>
+    <label class="padSliderLeft130 padRight150 whiteText font150">Stop Bar</label>
+    <label class="padSliderLeft130 whiteText font150">End</label>
+
+</div>
+
+</body>
+</html>

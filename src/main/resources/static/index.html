@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Glidepath</title>
+
+    <meta name="viewport" content="width=device-width">
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="icon" sizes="192x192" href="images/glidepath.png">
+
+    <link rel="stylesheet" media="all" type="text/css" href="css/dvi.css" />
+
+    <script src="opensource/sockjs-0.3.4.js"></script>
+    <script src="opensource/stomp.js"></script>
+    <script src="opensource/jquery/js/jquery-1.10.2.js"></script>
+    <script src="opensource/jquery/js/jquery-ui-1.10.4.custom.min.js"></script>
+    <script src="js/dviConstants.js"></script>
+    <script src="js/dviAjax.js"></script>
+
+</head>
+<body>
+<noscript><h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Websocket relies on Javascript being enabled. Please enable
+    Javascript and reload this page!</h2></noscript>
+
+    <div id="blackContainer">
+
+        <h1 class="whiteText centeredText"><u>System Advisory</u></h1>
+
+        <h2 class="whiteText paraWidthSmall">This vehicle is equipped with automated control and should be operated by
+            <span style="color: #ff0000"><u>Authorized Users ONLY</u></span>.</h2>
+
+        <h2 class="whiteText paraWidthLarge">Operators should proceed with caution and always obey traffic laws and pay attention to traffic. Please review the GlidePath Prototype manual for complete system details and further instructions.</h2>
+
+        <a href="status.html">
+            <img class="centeredImage" id="goButtonId" src="images/GoButton.jpg" />
+        </a>
+
+    </div>
+
+</body>
+</html>

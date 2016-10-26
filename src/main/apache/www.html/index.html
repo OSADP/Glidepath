@@ -1,0 +1,40 @@
+<!-- 
+Web interface for Leidos @ Glidepath
+
+Used to start and stop glidepath
+
+Cloned and updated from Kyle's Task 4 control
+Kyle Rush <kyle.rush@leidos.com>
+-->
+
+<html>
+	<head>
+		<title>Glidepath Application Control Panel</title>
+
+        <meta name="viewport" content="width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <link rel="icon" sizes="192x192" href="http://192.168.0.4/glidepath.png">
+
+        <link rel="stylesheet" type="text/css" href="style.css">
+		<script src="scripts/js/jquery-1.11.2.js"></script>
+		<script src="scripts/js/appcontrol.js"></script>
+	</head>
+	<body>
+		<div id="navPane">
+            <div class="navLink" onclick="startGlidepath()">
+                START Glidepath
+            </div>
+            <br/><br/><br/>
+            <div class="navLink" onclick="stopGlidepath()">
+                STOP Glidepath
+            </div>
+            <br/><br/><br/>
+            <div class="navLink" onclick="navigateToDvi()">
+				Navigate to Glidepath DVI
+			</div>
+		</div>
+
+    <h2 class="centeredText whiteText">DVI Status: </h2>
+    <h2 class="" id="dviStatusId"></h2>
+	</body>
+</html>

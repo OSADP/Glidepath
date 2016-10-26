@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Glidepath - Vehicle Location</title>
+
+    <link href="opensource/jquery/css/ui-lightness/jquery-ui-1.10.4.custom.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" media="all" type="text/css" href="css/dvi.css" />
+    <!--pulled from internet, may need to geoserver, openstreet map it-->
+    <script src="http://maps.google.com/maps/api/js?sensor=false"
+            type="text/javascript"></script>
+    <script src="opensource/sockjs-0.3.4.js"></script>
+    <script src="opensource/stomp.js"></script>
+    <script src="opensource/jquery/js/jquery-1.10.2.js"></script>
+    <script src="opensource/jquery/js/jquery-ui-1.10.4.custom.min.js"></script>
+    <script src="js/dviConstants.js"></script>
+    <script src="js/dviAjax.js"></script>
+    <script src="js/connect.js"></script>
+    <script src="js/maps.js"></script>
+
+    <script type="text/javascript">
+        var map, marker = false;
+        var zoomLevel = 19;
+
+        function displayUiMessage(uiMessage) {
+            var message = "UiMessage [ latitude : " + uiMessage.latitude + ", longitude : " + uiMessage.longitude +
+                    ", glidepathState : " + uiMessage.glidepathState + ", signalPhase : " + uiMessage.signalPhase +
+                    ", timeNextPhase : " + uiMessage.timeNextPhase +
+                    ", timeThirdPhase : " + uiMessage.timeThirdPhase +
+                    ", motionStatus : " + uiMessage.motionStatus +
+                    ", speed : " + uiMessage.speed +
+                    ", targetSpeed : " + uiMessage.targetSpeed +
+                    ", timeStamp : " + uiMessage.timeStamp + " ]";
+
+            addMarker(uiMessage.latitude, uiMessage.longitude);
+
+            var speedElement = document.getElementById("speedId");
+            speedElement.value = Math.round(uiMessage.speed);
+            //setDviData("speedId", Math.round(uiMessage.speed));
+
+            setDviData("operatingSpeedId", "Selected Speed: " + Math.round(uiMessage.operatingSpeed) + "mph");;
+
+            // replace underscore in enum value with space
+            var motionStatus = uiMessage.motionStatus;
+            setDviData("motionStatusId", motionStatus.replace('_', ' '));
+
+            setMotionStatusImage(uiMessage);
+
+            setTrafficSignal(uiMessage);
+            setDviData("timeNextPhaseId", Math.round(uiMessage.timeNextPhase));
+
+        }
+
+    </script>
+
+    <script src="js/dvi.js"></script>
+
+</head>
+<body>
+<noscript><h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Websocket relies on Javascript being enabled. Please enable
+    Javascript and reload this page!</h2></noscript>
+
+<div id="lightGreyContainer">
+
+    <div id="map"></div>
+
+</div>
+
+
+
+</body>
+</html>

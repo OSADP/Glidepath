@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Glidepath - Status</title>
+
+    <link rel="stylesheet" media="all" type="text/css" href="css/dvi.css" />
+    <link href="opensource/jquery/css/ui-lightness/jquery-ui-1.10.4.custom.min.css" rel="stylesheet"/>
+    <script src="opensource/sockjs-0.3.4.js"></script>
+    <script src="opensource/stomp.js"></script>
+    <script src="opensource/jquery/js/jquery-1.10.2.js"></script>
+    <script src="opensource/jquery/js/jquery-ui-1.10.4.custom.min.js"></script>
+    <script src="js/dviConstants.js"></script>
+    <script src="js/dviAjax.js"></script>
+    <script src="js/connect.js"></script>
+    <script src="js/status.js"></script>
+
+    <script type="text/javascript">
+        function displayUiMessage(uiMessage) {
+// commented, but retained for debug purposes
+//            var message = "UiMessage [ latitude : " + uiMessage.latitude + ", longitude : " + uiMessage.longitude +
+//                    ", glidepathState : " + uiMessage.glidepathState + ", signalPhase : " + uiMessage.signalPhase +
+//                    ", timeNextPhase : " + uiMessage.timeNextPhase +
+//                    ", timeThirdPhase : " + uiMessage.timeThirdPhase +
+//                    ", motionStatus : " + uiMessage.motionStatus +
+//                    ", speed : " + uiMessage.speed +
+//                    ", targetSpeed : " + uiMessage.targetSpeed +
+//                    ", timeStamp : " + uiMessage.timeStamp + " ]";
+
+            if (uiMessage.glidepathState === "FATAL")   {
+                // This turns off logging, rolls logs, exits app. Lack of second arg redirects to "Glidepath unavail"
+                DviAjax.ajaxSetLogging(false);
+                return;
+            }
+
+            //setDviData("uiMessage", message);
+            setGearStateImage(uiMessage);
+            setYellowButtonImage(uiMessage);
+            setGpsImage(uiMessage);
+            setGoButtonImage(uiMessage);
+
+            // missing spat message has NONE signalPhase and 0.0 for both values
+            if (uiMessage.signalPhase != "NONE")    {
+                setTrafficSignal(uiMessage);
+
+                var logFilePrefix = document.getElementById("operatingSpeedId").value + '.' + uiMessage.signalPhase + uiMessage.timeNextPhase;
+
+                setDviData("logFilePrefixId", logFilePrefix ) ;
+            }
+            else   {
+                var logFilePrefix = document.getElementById("operatingSpeedId").value + '.NoSpat'
+            }
+
+            //setDviStatusMessage(uiMessage);
+
+        }
+    </script>
+
+    <script src="js/dvi.js"></script>
+
+</head>
+<body>
+<noscript><h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Websocket relies on Javascript being enabled. Please enable
+    Javascript and reload this page!</h2></noscript>
+
+<!--No longer displaying status messages.  Keep commented for if we transition to debug/non-debug mode-->
+<!--<div class="blueText centeredText" id="statusMessageId"></div>-->
+
+<div id="greyContainer">
+
+    <div class="leftColumn">
+        <h1 class=" whiteText centeredText">
+            Driver Input
+        </h1>
+    </div>
+    <div class="centerColumn">
+        <h1 class=" whiteText centeredText">
+            Signal Status
+        </h1>
+    </div>
+    <div class="rightColumn">
+        <h1 class=" whiteText centeredText">
+            Activation Sequence
+        </h1>
+    </div>
+
+    <hr class="" width="90%">
+
+    <div class="leftColumn">
+
+        <table class="" align="center">
+            <tr>
+                <td>
+                    <h1 class="whiteText centeredText">Select Operational Speed</h1>
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <img class="centeredImage" id="buttonUpId" src="images/spinnerUp.png"  onclick="operatingSpeedUp();"/>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="padLeft150">
+                    <input class="spinner" type="text" id="operatingSpeedId" value="20" />
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <img class="centeredImage" id="buttonDownId" src="images/spinnerDown.png"  onclick="operatingSpeedDown();"/>
+                </td>
+            </tr>
+
+
+            <!--remove record data button and just autostart when we enter eco drive, uncomment if you just wanna collect data without eco drive -->
+            <!--<tr>-->
+                <!--<td>-->
+                    <!--<img class="centeredImage padBottom50" id="recordDataId" src="images/recordData.png"  onclick="DviAjax.ajaxSetLogging(true);" />-->
+                <!--</td>-->
+            <!--</tr>-->
+
+            <tr>
+                <td>
+                    <img class="padTop100 centeredImage" id="goButtonId" src=""  onclick="DviAjax.ajaxStartEcoDrive();"/>
+                </td>
+            </tr>
+
+        </table>
+
+    </div>
+
+
+    <div class="centerColumn" style="border-left:medium #FFFFFF solid; height:400px;">
+        <div class="padTop20 signal">
+            <table class="" id="trafficSignalId" height="350px" width="166px" background="images/TrafficSignal.png" cellpadding="" cellspacing="0">
+                <tr>
+                    <td>
+                        <h1 class="timeNextPhaseRed" id="timeNextPhaseId">
+
+                        </h1>
+                    </td>
+                </tr>
+            </table>
+
+            <div class="">
+                <table>
+                    <tr>
+                        <td class="tdNoPadding">
+                            <img class="valignImageMiddle" id="gpsImageId" src="images/redCircle.png"/>
+                        </td>
+                        <td class="tdNoPadding">
+                            <h2 class="padLeft20 padTop16 whiteText">GPS</h2><br>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+
+            <label class="hidden" id="logFilePrefixId" />
+
+            <!--show text of uiMessage-->
+            <label id="uiMessage" class="dviValue"></label>
+        </div>
+
+    </div>
+
+
+    <div class="rightColumn" style="border-left:medium #FFFFFF solid; height:400px;">
+        <table class="tableNoPadding" align="center" >
+            <tr>
+                <td class="tdNoPadding">
+                    <img class="padLeft20 valignImageMiddle" id="gearShiftImageId" src="images/redCircle.png"/>
+                </td>
+                <td class="tdNoPadding">
+                    <h2 class="padLeft20 padTop16 whiteText">Shift to N</h2><br>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="tdNoPadding">
+                    <img class="padLeft20 valignImageMiddle" id="yellowButtonImageId" src="images/greenCircle.png"/>
+                </td>
+                <td class="tdNoPadding">
+                    <h2 class="padLeft20 padTop16 whiteText">Release Brake & Reset Emergency Override</h2><br>
+                </td>
+            </tr>
+
+        </table>
+
+        <img class="padLeft150 padTop50" id="homeId" src="images/home.png" onclick="navigateHome();"/>
+
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<torc_settings  productID="PINPOINT">
+	<model>PP1-G13-I10-W02</model>
+	<option></option>
+	<boardInfo>
+		<hwver>1.2</hwver>
+		<serial>1000096D5AA80199</serial>
+		<fwver>S16</fwver>
+		<fwrev>99150</fwrev>
+		<fwdate>Sep  9 2014</fwdate>
+		<gccver>4.7.3</gccver>
+	</boardInfo>
+	<section page="network">
+		<setting name="ipaddress">192.168.0.5</setting>
+		<setting name="netmask">255.255.255.0</setting>
+		<setting name="gateway">192.168.0.1</setting>
+	</section>
+	<section page="backbone">
+		<setting name="bbmcast">239.255.255.2</setting>
+		<setting name="bbport">4794</setting>
+		<setting name="loc_urn">localization</setting>
+		<setting name="loc_port">9501</setting>
+		<setting name="imu_urn">localization.imu</setting>
+		<setting name="imu_port">9502</setting>
+		<setting name="gps_urn">localization.gps</setting>
+		<setting name="gps_port">9503</setting>
+		<setting name="wss_urn">localization.wss</setting>
+		<setting name="wss_port">9504</setting>
+		<setting name="poi_urn">localization.poi</setting>
+		<setting name="poi_port">9505</setting>
+	</section>
+	<section page="vehicle">
+		<setting name="imu_orient">0.00,0.00,0.00</setting>
+		<setting name="imu_offset">-0.15,-0.26,-0.81</setting>
+		<setting name="pri_ant_offset">-0.12,-0.48,-1.55</setting>
+		<setting name="sec_ant_offset">-0.12,0.48,-1.55</setting>
+		<setting name="left_wss_offset">0.00,-0.77,0.34</setting>
+		<setting name="right_wss_offset">0.00,0.77,0.34</setting>
+		<setting name="wss_noise">0.100</setting>
+		<setting name="rate_vibe">2.1</setting>
+		<setting name="vel_vibe">0.8</setting>
+	</section>
+</torc_settings>

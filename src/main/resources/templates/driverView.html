@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Glidepath - Driver View</title>
+
+    <link href="opensource/jquery/css/ui-lightness/jquery-ui-1.10.4.custom.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" media="all" type="text/css" href="css/dvi.css" />
+    <script src="opensource/sockjs-0.3.4.js"></script>
+    <script src="opensource/stomp.js"></script>
+    <script src="opensource/jquery/js/jquery-1.10.2.js"></script>
+    <script src="opensource/jquery/js/jquery-ui-1.10.4.custom.min.js"></script>
+    <script src="js/dviConstants.js"></script>
+    <script src="js/dviAjax.js"></script>
+    <script src="js/connect.js"></script>
+    <script src="js/driver.js"></script>
+
+    <script type="text/javascript">
+
+        function displayUiMessage(uiMessage) {
+
+// commented, but retained for debugging purposes
+//            var message = "UiMessage [ latitude : " + uiMessage.latitude + ", longitude : " + uiMessage.longitude +
+//                    ", glidepathState : " + uiMessage.glidepathState + ", signalPhase : " + uiMessage.signalPhase +
+//                    ", timeNextPhase : " + uiMessage.timeNextPhase +
+//                    ", timeThirdPhase : " + uiMessage.timeThirdPhase +
+//                    ", motionStatus : " + uiMessage.motionStatus +
+//                    ", speed : " + uiMessage.speed +
+//                    ", targetSpeed : " + uiMessage.targetSpeed +
+//                    ", timeStamp : " + uiMessage.timeStamp + " ]";
+
+            setEcoDriveState(uiMessage);
+
+            var speedElement = document.getElementById("speedId");
+
+            if (uiMessage.speed)   {
+                speedElement.value = Math.round(uiMessage.speed);
+            }
+
+            var opSpeedElement = document.getElementById("operatingSpeedId");
+            opSpeedElement.value = Math.round(uiMessage.operatingSpeed);
+
+            // replace underscore in enum value with space
+            if (uiMessage.motionStatus)   {
+                var motionStatus = uiMessage.motionStatus;
+                setDviData("motionStatusId", motionStatus.replace('_', ' '));
+                setMotionStatusImage(uiMessage);
+            }
+
+            if (uiMessage.signalPhase != "NONE")   {
+                setTrafficSignal(uiMessage);
+            }
+
+            setDistanceToStopBar(uiMessage);
+
+            // if we are DTSB_AUTO_STOP past the stop bar, submit a stop logging and roll logs ajax request.
+            // initiating from client so we can browse to another page at the end
+            checkAutoStop(uiMessage);
+
+            // if stepped on brake, bail
+            if (uiMessage.manualOverrideEngaged)   {
+                // This turns off logging, rolls logs, exits app. Lack of second arg redirects to "Glidepath unavail"
+                DviAjax.ajaxSetLogging(false);
+            }
+            else   {
+                if (uiMessage.statusMessage)   {
+                    if (uiMessage.statusMessage.length > 0)   {
+                        DviAjax.ajaxSetLogging(false);
+                    }
+                }
+            }
+        }
+
+
+        function log(msg) {
+            //document.querySelector('pre').textContent += '\n ' + msg;
+        }
+
+        function setSource() {
+            //log('set source');
+            var video = document.querySelector('video');
+            video.src = 'sounds/ding.' +
+                    (video.canPlayType('audio/wav') ? 'wav' : 'wav');
+        }
+
+        function mediaPlaybackRequiresUserGesture() {
+            // test if play() is ignored when not called from an input event handler
+            var video = document.createElement('video');
+            video.play();
+            return video.paused;
+        }
+
+        function removeBehaviorsRestrictions() {
+            var video = document.querySelector('video');
+            //log('call load()');
+            video.load();
+            window.removeEventListener('keydown', removeBehaviorsRestrictions);
+            window.removeEventListener('mousedown', removeBehaviorsRestrictions);
+            window.removeEventListener('touchstart', removeBehaviorsRestrictions);
+            log('wait 1 second');
+            //setTimeout(setSource, 1000);
+            setSource();
+        }
+
+        function playSound() {
+            //log('play');
+            var video = document.querySelector('video');
+            video.play();
+        }
+
+
+
+        if (mediaPlaybackRequiresUserGesture()) {
+            //log('wait for input event');
+            window.addEventListener('keydown', removeBehaviorsRestrictions);
+            window.addEventListener('mousedown', removeBehaviorsRestrictions);
+            window.addEventListener('touchstart', removeBehaviorsRestrictions);
+        } else {
+            //log('no user gesture required');
+            setSource();
+        }
+
+    </script>
+
+    <script src="js/dvi.js"></script>
+</head>
+<body>
+<noscript><h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Websocket relies on Javascript being enabled. Please enable
+    Javascript and reload this page!</h2></noscript>
+
+<!--No longer displaying status messages.  Keep commented for if we transition to debug/non-debug mode-->
+<!--<div class="blueText centeredText" id="statusMessageId"></div>-->
+
+
+<!--SEE http://blog.foolip.org/2014/02/10/media-playback-restrictions-in-blink/-->
+<!--android sound problems...works on tablet now, no longer works on desktop and maybe other tablets-->
+<!--<video controls autoplay></video>-->
+<video autoplay="autoplay"></video>
+
+<div id="greyContainer">
+
+
+    <div class="leftColumn padTop10">
+        <img class="padBottom20 centeredImage" id="recordStopId" src="images/ecoDriveOff.png" onclick="DviAjax.ajaxSetLogging(false);"/>
+        <img class="centeredImage" id="ecoDriveId" src="" onclick="DviAjax.ajaxEcoDrive(strEcoDriveState);"/>
+    </div>
+
+    <div class="centerColumn" style="border-left:medium #FFFFFF solid; height:400px;">
+        <div class="padTop20 signal">
+            <table class="" id="trafficSignalId" height="350px" width="166px" background="images/TrafficSignal.png" cellpadding="" cellspacing="0">
+                <tr>
+                    <td>
+                        <h1 class="timeNextPhaseRed" id="timeNextPhaseId">
+
+                        </h1>
+                    </td>
+                </tr>
+            </table>
+
+            <label class="hidden" id="logFilePrefixId" />
+
+            <!--show text of uiMessage-->
+            <label id="uiMessage" class="dviValue"></label>
+        </div>
+    </div>
+
+
+    <div class="rightColumn padTop10" style="border-left:medium #FFFFFF solid; height:400px;">
+
+        <label class="padLeft80 whiteText font150">Selected Speed</label>
+        <div class="padBottom20 centered">
+            <input class="operatingspeed centeredText" type="text" id="operatingSpeedId" value="25" />
+        </div>
+
+        <label class="padLeft80 padTop10 padBottom10 whiteText font150">Current Speed</label>
+        <!--<h1 class="whiteText centeredText">Current Speed</h1>-->
+        <div class="padTop10 padBottom20 centered">
+            <input class="speed centeredText" type="text" id="speedId" value="25" />
+        </div>
+
+        <label class="padLeft100 padTop20 whiteText font150" id="motionStatusId"><b>Stopped</b></label>
+        <!--<h1 class="whiteText centeredText" id="motionStatusId"><b>Stopped</b></h1>-->
+        <img class="padTop10 centeredImage" id="motionStatusImageId" src="images/redStopped.jpg" />
+    </div>
+
+    <!--STOP BAR SLIDER-->
+    <h1 class="centeredText whiteText"><b>Distance to Stop Bar</b></h1>
+    <div class="centeredImage width700" id="distanceToStopBarSlider"></div>
+
+    <label class="padLeft250 padRight150 whiteText font150">Start</label>
+    <label class="padSliderLeft130 padRight150 whiteText font150">Stop Bar</label>
+    <label class="padSliderLeft130 whiteText font150">End</label>
+
+</div>
+
+</body>
+</html>

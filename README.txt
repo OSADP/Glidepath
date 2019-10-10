@@ -34,8 +34,3 @@ Test Plan
 Test Report
 Project Final Report
 
-
-Web sites
----------
-The software is distributed through the USDOT's JPO Open Source Application Development Portal (OSADP)
-http://itsforge.net/ 

@@ -4,6 +4,9 @@ GlidePath Eco-Approach and Departure
 Version 1.6.5
 
 Description:
+
+GlidePath computes an optimum speed profile to minimize fuel consumption and emissions through signalized intersections, and optionally controls acceleration and braking to follow that profile. The GlidePath Prototype showed 15-22% fuel savings over humans when operating Level 1 connected-automated at an intelligent traffic signal. 
+
 The GlidePath software is written in Java and is intended to run on an Ubuntu 14.04 system onboard the test vehicle.  It is based on the Spring framework, using Spring Boot to run all operations as a single web server, with the service bus, web pages and interface code all bundled into a single executable jar file.
 
 
